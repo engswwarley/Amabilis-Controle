@@ -26,7 +26,7 @@ public interface ItemObraRepository extends JpaRepository<ItemObra, Long> {
                 nf.dataVencimento,
                 (SELECT MIN(p.dataPagamento) FROM PagamentoNotaFiscal p WHERE p.notaFiscal = nf),
                 nf.numeroDocumento,
-                forn.nomeFantasia,
+                CASE WHEN forn.nomeFantasia IS NOT NULL AND TRIM(forn.nomeFantasia) <> '' THEN forn.nomeFantasia ELSE forn.razaoSocial END,
                 t.codigoTarefa,
                 t.descricao,
                 r.codigoHierarquico,

@@ -76,9 +76,7 @@ public class RelatorioCustosExcelService extends RelatorioBaseExcelService {
 
                 criarCelula(linhaDados, 3, notaFiscal.getNumeroDocumento(), estiloPadrao);
                 
-                if (notaFiscal.getFornecedor() != null) {
-                    criarCelula(linhaDados, 4, notaFiscal.getFornecedor().getNomeFantasia(), estiloPadrao);
-                }
+                criarCelula(linhaDados, 4, obterNomeFornecedor(notaFiscal), estiloPadrao);
 
                 if (itemObra.getTarefa() != null) {
                     criarCelula(linhaDados, 5, itemObra.getTarefa().getCodigoTarefa(), estiloPadrao);
@@ -97,5 +95,16 @@ public class RelatorioCustosExcelService extends RelatorioBaseExcelService {
                 celulaValor.setCellStyle(formatoDinheiro);
             }
         }
+    }
+
+    private String obterNomeFornecedor(NotaFiscal notaFiscal) {
+        if (notaFiscal == null || notaFiscal.getFornecedor() == null) {
+            return "";
+        }
+        String nomeFantasia = notaFiscal.getFornecedor().getNomeFantasia();
+        String razaoSocial = notaFiscal.getFornecedor().getRazaoSocial();
+        return (nomeFantasia != null && !nomeFantasia.isBlank())
+                ? nomeFantasia
+                : (razaoSocial != null ? razaoSocial : "");
     }
 }

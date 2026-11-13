@@ -27,7 +27,7 @@ public class RelatorioPagamentosExcelService extends RelatorioBaseExcelService {
 
     public void gerarRelatorio(long obraId, HttpServletResponse response) {
         Obra obra = buscarObra(obraId);
-        String[] cabecalhoPagamento = {"N° DO DOCTO", "EMISSÃO", "VENCTO", "DATA PAGTO", "VALOR PAGO"};
+        String[] cabecalhoPagamento = {"N° DO DOCTO", "FORNECEDOR", "EMISSÃO", "VENCTO", "DATA PAGTO", "VALOR PAGO"};
 
         try (XSSFWorkbook arquivoExcel = new XSSFWorkbook()) {
             Map<String, XSSFCellStyle> estilos = criarEstilos(arquivoExcel);
@@ -72,17 +72,19 @@ public class RelatorioPagamentosExcelService extends RelatorioBaseExcelService {
 
         for (NotaFiscal notaFiscal : notasFiscais) {
             if (notaFiscal.getPagamentos() != null && !notaFiscal.getPagamentos().isEmpty()) {
+                String nomeFornecedor = obterNomeFornecedor(notaFiscal);
                 for (PagamentoNotaFiscal pagamento : notaFiscal.getPagamentos()) {
                     XSSFRow linhaDados = planilha.createRow(indiceLinha++);
 
                     criarCelula(linhaDados, 0, notaFiscal.getNumeroDocumento(), estiloPadrao);
-                    criarCelula(linhaDados, 1, notaFiscal.getDataEmissao(), notaFiscal.getDataEmissao() != null ? formatoData : estiloPadrao);
-                    criarCelula(linhaDados, 2, notaFiscal.getDataVencimento(), notaFiscal.getDataVencimento() != null ? formatoData : estiloPadrao);
+                    criarCelula(linhaDados, 1, nomeFornecedor, estiloPadrao);
+                    criarCelula(linhaDados, 2, notaFiscal.getDataEmissao(), notaFiscal.getDataEmissao() != null ? formatoData : estiloPadrao);
+                    criarCelula(linhaDados, 3, notaFiscal.getDataVencimento(), notaFiscal.getDataVencimento() != null ? formatoData : estiloPadrao);
                     
                     Object dataPagto = pagamento.getDataPagamento();
-                    criarCelula(linhaDados, 3, dataPagto != null ? dataPagto : "", (dataPagto != null) ? formatoData : estiloPadrao);
+                    criarCelula(linhaDados, 4, dataPagto != null ? dataPagto : "", (dataPagto != null) ? formatoData : estiloPadrao);
 
-                    Cell celulaValor = linhaDados.createCell(4);
+                    Cell celulaValor = linhaDados.createCell(5);
                     if (pagamento.getValorPago() != null) {
                         celulaValor.setCellValue(pagamento.getValorPago().doubleValue());
                     }
@@ -90,5 +92,16 @@ public class RelatorioPagamentosExcelService extends RelatorioBaseExcelService {
                 }
             }
         }
+    }
+
+    private String obterNomeFornecedor(NotaFiscal notaFiscal) {
+        if (notaFiscal == null || notaFiscal.getFornecedor() == null) {
+            return "";
+        }
+        String nomeFantasia = notaFiscal.getFornecedor().getNomeFantasia();
+        String razaoSocial = notaFiscal.getFornecedor().getRazaoSocial();
+        return (nomeFantasia != null && !nomeFantasia.isBlank())
+                ? nomeFantasia
+                : (razaoSocial != null ? razaoSocial : "");
     }
 }

@@ -73,10 +73,20 @@ public class RelatorioPagamentosService extends RelatorioBaseExcelService {
         return new RelatorioPagamentoLinhaDTO(
                 pagamento.getId(),
                 pagamento.getNotaFiscal().getNumeroDocumento(),
+                obterNomeFornecedor(pagamento),
                 pagamento.getNotaFiscal().getDataEmissao(),
                 pagamento.getNotaFiscal().getDataVencimento(),
                 pagamento.getDataPagamento(),
                 pagamento.getValorPago()
         );
+    }
+
+    private String obterNomeFornecedor(PagamentoNotaFiscal pagamento) {
+        if (pagamento.getNotaFiscal() == null || pagamento.getNotaFiscal().getFornecedor() == null) {
+            return null;
+        }
+        String nomeFantasia = pagamento.getNotaFiscal().getFornecedor().getNomeFantasia();
+        String razaoSocial = pagamento.getNotaFiscal().getFornecedor().getRazaoSocial();
+        return (nomeFantasia != null && !nomeFantasia.isBlank()) ? nomeFantasia : razaoSocial;
     }
 }

@@ -39,6 +39,7 @@ const TabelaSaida = ({ dados, isLoading = false }) => {
         <thead>
           <tr>
             <th>Documento</th>
+            <th>Fornecedor</th>
             <th>Emissão</th>
             <th>Vencimento</th>
             <th>Pagamento</th>
@@ -50,6 +51,7 @@ const TabelaSaida = ({ dados, isLoading = false }) => {
             linhas.map((item) => (
               <tr key={item.id}>
                 <td>{item.numeroDocumento || '-'}</td>
+                <td>{item.fornecedor || '-'}</td>
                 <td>{formatarData(item.emissao)}</td>
                 <td>{formatarData(item.vencimento)}</td>
                 <td>{formatarData(item.pagto)}</td>
@@ -58,7 +60,7 @@ const TabelaSaida = ({ dados, isLoading = false }) => {
             ))
           ) : (
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
+              <td colSpan="6" style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
                 Nenhum dado disponível
               </td>
             </tr>

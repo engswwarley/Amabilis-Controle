@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public record RelatorioPagamentoLinhaDTO(
         Long id,
         String numeroDocumento,
+        String fornecedor,
         LocalDate emissao,
         LocalDate vencimento,
         LocalDate pagto,
